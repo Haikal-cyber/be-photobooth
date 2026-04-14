@@ -32,6 +32,8 @@ services:
     environment:
       PORT: 3000
       DATABASE_URL: mysql://photobooth_user:Photobooth123!@mysql:3306/be_photobooth
+      TELEGRAM_BOT_TOKEN: 8632586099:AAHKDFEcT1JvYb9k3AKsV9ePoV-7qSnHZts
+      TELEGRAM_ALLOWED_IDS: 1140383208
     ports:
       - '3002:3000'
     volumes:
