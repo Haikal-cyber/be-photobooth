@@ -33,7 +33,7 @@ services:
       PORT: 3000
       DATABASE_URL: mysql://photobooth_user:Photobooth123!@mysql:3306/be_photobooth
     ports:
-      - '3000:3000'
+      - '3002:3000'
     volumes:
       - .:/app
       - /app/node_modules
