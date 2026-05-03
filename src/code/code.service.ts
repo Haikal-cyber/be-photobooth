@@ -118,6 +118,45 @@ export class CodeService {
     };
   }
 
+  async findAccessCodesByUserId(userId: string): Promise<
+    Array<{
+      id: string;
+      code: string;
+      usageCount: number;
+      maxUsage: number;
+      isActive: boolean;
+      createdAt: Date;
+      updatedAt: Date;
+      createdBy: string | null;
+    }>
+  > {
+    const rows = await this.prisma.accessCode.findMany({
+      where: { createdById: BigInt(userId) },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        code: true,
+        usageCount: true,
+        maxUsage: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+        createdById: true,
+      },
+    });
+
+    return rows.map((row) => ({
+      id: row.id.toString(),
+      code: row.code,
+      usageCount: row.usageCount,
+      maxUsage: row.maxUsage,
+      isActive: row.isActive,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      createdBy: row.createdById != null ? row.createdById.toString() : null,
+    }));
+  }
+
   private createFourDigitCode(): string {
     const value = Math.floor(Math.random() * 10000);
     return value.toString().padStart(4, '0');
