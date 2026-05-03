@@ -7,14 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id          BigInt       @id @default(autoincrement())
+  email       String       @unique
+  password    String
+  name        String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  accessCodes AccessCode[]
+
+  @@index([email])
+}
+
 model AccessCode {
-  id        BigInt   @id @default(autoincrement())
-  code      String   @unique @db.Char(4)
-  usageCount Int     @default(0)
-  maxUsage  Int      @default(2)
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          BigInt   @id @default(autoincrement())
+  code        String   @unique @db.Char(4)
+  usageCount  Int      @default(0)
+  maxUsage    Int      @default(2)
+  isActive    Boolean  @default(true)
+  createdById BigInt?
+  createdBy   User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@index([code, isActive])
+  @@index([createdById])
 }

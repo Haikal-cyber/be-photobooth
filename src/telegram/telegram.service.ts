@@ -31,7 +31,7 @@ export class TelegramService implements OnModuleInit, OnModuleDestroy {
       }
 
       try {
-        const result = await this.codeService.generateCode();
+        const result = await this.codeService.generateCode(null);
 
         await this.bot?.sendMessage(
           chatId,

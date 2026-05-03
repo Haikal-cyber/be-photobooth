@@ -12,7 +12,11 @@ export class CodeService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async generateCode(): Promise<{ code: string; maxUsage: number }> {
+  async generateCode(createdByUserId: string | null): Promise<{
+    code: string;
+    maxUsage: number;
+    createdBy?: string;
+  }> {
     for (let attempt = 0; attempt < this.maxGenerateRetries; attempt += 1) {
       const code = this.createFourDigitCode();
 
@@ -23,14 +27,24 @@ export class CodeService {
             maxUsage: 2,
             usageCount: 0,
             isActive: true,
+            ...(createdByUserId !== null
+              ? { createdById: BigInt(createdByUserId) }
+              : {}),
           },
           select: {
             code: true,
             maxUsage: true,
+            createdById: true,
           },
         });
 
-        return created;
+        return {
+          code: created.code,
+          maxUsage: created.maxUsage,
+          ...(created.createdById != null
+            ? { createdBy: created.createdById.toString() }
+            : {}),
+        };
       } catch (error) {
         if (this.isUniqueViolation(error)) {
           continue;
